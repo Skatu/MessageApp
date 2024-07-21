@@ -16,18 +16,21 @@ object Server {
     implicit val executionContext: ExecutionContextExecutor = system.executionContext
     implicit val materializer: Materializer = SystemMaterializer(system).materializer
 
-    val route: Route = path("hello"){
+    val route: Route = path("ping"){
       get {
         complete("OK")
+      }
+    }~path("message"){
+      get{
+        complete("hi")
       }
     }
 
     val server = Http().newServerAt("localhost", 8080).bind(route)
     println("Server online at http://localhost:8080")
     StdIn.readLine()
-
+    
     server.flatMap(_.unbind())
       .onComplete(_=>system.terminate())
-
   }
 }
